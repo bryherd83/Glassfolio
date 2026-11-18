@@ -1,19 +1,61 @@
+/**
+ * Base class for the investing strategies (Strategy pattern).
+ * Each child scores an index its own way, and callers only use score()
+ * and explain(), so a new strategy plugs in without changing the screens.
+ */
 public abstract class Stratgey {
 
-   protected String name;
+   /** Turns fractions like 0.12 into points like 12 so scores are easy to read. */
+   protected static final double SCORE_SCALE = 100;
 
+   private final String name;
+
+   /**
+    * @param name the strategy's display name, for example "Growth"
+    */
    public Stratgey(String name){
        this.name = name;
    }
 
+   /** @return the strategy's display name */
    public String getName(){
        return name;
    }
 
+   /**
+    * Adjusts a base limit for the given user.
+    *
+    * @param base the limit before adjustment
+    * @param user the user being advised
+    * @return the limit to use for this user
+    */
    public abstract double adjustThreshold(double base, User user);
 
+   /**
+    * Scores an index for this user. Higher is better and 0 means "don't suggest it".
+    *
+    * @param stock the index to score
+    * @param user  the user being advised
+    * @return the score, 0 or more
+    */
    public abstract double score (Stock stock, User user);
 
+   /**
+    * Explains in one sentence why an index was suggested.
+    *
+    * @param stock the suggested index
+    * @param user  the user being advised
+    * @return the explanation
+    */
    public abstract String explain(Stock stock, User user);
+
+   /**
+    * Explains in one sentence why an index was not suggested.
+    *
+    * @param stock the index that scored 0
+    * @param user  the user being advised
+    * @return the explanation
+    */
+   public abstract String explainMiss(Stock stock, User user);
 
 }

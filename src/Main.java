@@ -1,13 +1,10 @@
-import java.util.List;
+import javafx.application.Application;
 
-public class Main{
-    public static void main(String[] args){
-        IO.println("Welcome to the Stock Suggestion System");
-        IO.println("Username:");
-        String username = IO.readln();
-        IO.println("Password:");
-        String password = IO.readln();
-        User user = new User(username, password);
+/**
+ * Starts Glassfolio. Kept apart from StockApp so the app also
+ * starts when JavaFX is on the classpath instead of the module path.
+ */
+public class Main {
 
         IO.println("What is your Budget?");
         double budget = Double.parseDouble(IO.readln());
@@ -31,4 +28,12 @@ public class Main{
         }
         Suggestion suggestor = new suggestion
         }
+    /**
+     * Opens the JavaFX window.
+     *
+     * @param args passed on to JavaFX
+     */
+    public static void main(String[] args) {
+        Application.launch(StockApp.class, args);
     }
+}
