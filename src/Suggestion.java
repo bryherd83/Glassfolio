@@ -9,7 +9,7 @@ import java.util.List;
  * @param stock  the suggested index
  * @param score  the strategy's score, above 0
  * @param reason one sentence from the strategy saying why it was picked
- * @param worth  what the user's budget, invested a year ago, would be worth today
+ * @param worth  what the user's budget, invested a year ago, would be worth today; 0 for a left-out index
  */
 public record Suggestion(Stock stock, double score, String reason, double worth) {
 
@@ -32,5 +32,23 @@ public record Suggestion(Stock stock, double score, String reason, double worth)
         }
         picks.sort(Comparator.comparingDouble(Suggestion::score).reversed());
         return picks;
+    }
+
+    /**
+     * Lists the indexes the strategy left out, each with the reason why.
+     *
+     * @param strategy the user's strategy
+     * @param user     the user being advised
+     * @param indexes  the loaded indexes
+     * @return the left-out indexes with a score of 0, in their original order
+     */
+    public static List<Suggestion> missed(Stratgey strategy, User user, List<Stock> indexes) {
+        List<Suggestion> missed = new ArrayList<>();
+        for (Stock stock : indexes) {
+            if (strategy.score(stock, user) <= 0) {
+                missed.add(new Suggestion(stock, 0, strategy.explainMiss(stock, user), 0));
+            }
+        }
+        return missed;
     }
 }

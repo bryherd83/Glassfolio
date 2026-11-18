@@ -55,6 +55,12 @@ public class Stability extends Stratgey {
                 adjustThreshold(baseMaxVolatility, user) * SCORE_SCALE);
     }
 
+    @Override
+    public String explainMiss(Stock stock, User user){
+        return String.format("Volatility of %.1f%% is above the %.1f%% limit",
+                stock.getVolatility() * SCORE_SCALE, adjustThreshold(baseMaxVolatility, user) * SCORE_SCALE);
+    }
+
     private static double checkLimit(double limit) {
         if (limit <= 0) {
             throw new IllegalArgumentException("Volatility limit must be above 0");

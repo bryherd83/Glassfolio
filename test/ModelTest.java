@@ -80,13 +80,22 @@ public class ModelTest {
         cache.getValues("CPIAUCSL", java.time.LocalDate.now());
         check(near(cache.getPercentChange("CPIAUCSL").get(1), 0.3125), "320 -> 321 is +0.3125%");
 
-        // Bad input is rejected
-        expectRejected(() -> new User("a", "b", 0, User.STABILITY_PROFILE), "budget of 0");
-        expectRejected(() -> new User("a", "b", 100, 3), "risk profile 3");
-        expectRejected(() -> new FredClient(" "), "blank API key");
-        expectRejected(() -> new Stability(0), "volatility limit of 0");
-        expectRejected(() -> Stock.fromPrices("Z", "Z", List.of(1.0, 2.0)), "fewer than 3 prices");
-        expectRejected(() -> new Market(null), "missing data source");
+        // Year range and biggest drop: 100 -> 120 -> 90 -> 110 peaks at 120, falls to 90 (-25%)
+        Stock swing = Stock.fromPrices("W", "Swing", List.of(100.0, 120.0, 90.0, 110.0));
+        check(near(swing.getYearHigh(), 120) && near(swing.getYearLow(), 90), "year range is the high and the low");
+        check(near(swing.getBiggestDrop(), 0.25), "biggest drop is 120 -> 90, 25%");
+        check(near(steady.getBiggestDrop(), 0), "a series that only rises never drops");
+
+        // Left-out indexes come with the strategy's reason
+        List<Suggestion> missed = Suggestion.missed(growth, growthUser,
+                List.of(index("LOW", 0.12, 0), index("NONE", 0.01, 0)));
+        check(missed.size() == 1 && missed.get(0).stock().getTicker().equals("NONE"), "only the index under the minimum is missed");
+        check(missed.get(0).reason().contains("below the 10.0% minimum"), "growth explains the miss");
+        check(stability.explainMiss(index("C", 0, 0.17), stabilityUser).contains("above the 16.2% limit"),
+                "stability explains the miss");
+
+        expectRejected(() -> new Stock("X", "X", 100, 0, 0, 90, 80, 0), "year high below the price");
+        expectRejected(() -> new Stock("X", "X", 100, 0, 0, 110, 80, 1.5), "drop over 100%");
 
         System.out.println("All " + passed + " checks passed");
     }

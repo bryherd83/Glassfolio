@@ -49,4 +49,13 @@ public abstract class Stratgey {
     */
    public abstract String explain(Stock stock, User user);
 
+   /**
+    * Explains in one sentence why an index was not suggested.
+    *
+    * @param stock the index that scored 0
+    * @param user  the user being advised
+    * @return the explanation
+    */
+   public abstract String explainMiss(Stock stock, User user);
+
 }

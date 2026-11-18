@@ -32,6 +32,12 @@ public String explain(Stock stock, User user){
             stock.getName(), stock.getOneYearReturn() * SCORE_SCALE, baseMinGrowth * SCORE_SCALE);
 }
 
+@Override
+public String explainMiss(Stock stock, User user){
+    return String.format("Grew %.1f%% last year, below the %.1f%% minimum",
+            stock.getOneYearReturn() * SCORE_SCALE, baseMinGrowth * SCORE_SCALE);
+}
+
 /** Higher 1-year return = higher score. Anything under the minimum scores 0. */
 @Override
 public double score(Stock stock, User user){
