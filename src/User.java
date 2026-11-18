@@ -8,13 +8,13 @@ public class User {
     public static final int GROWTH_PROFILE = 2;
 
     private String username;
-    private String password; // kept in plain text for now; not used for login yet
+    private String password; // reserved for a future sign-in; the form passes an empty one today
     private double budget;
     private int riskProfile;
 
     /**
      * @param username    the user's name
-     * @param password    the user's password
+     * @param password    reserved for a future sign-in; empty for now
      * @param budget      the amount to invest, above 0
      * @param riskProfile STABILITY_PROFILE or GROWTH_PROFILE
      * @throws IllegalArgumentException if budget or riskProfile is invalid

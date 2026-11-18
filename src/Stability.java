@@ -6,7 +6,7 @@ public class Stability extends Stratgey {
     /** Highest yearly volatility allowed before the profile adjustment (18%). */
     public static final double DEFAULT_MAX_VOLATILITY = 0.18;
     /** Users with the Stability profile get a 10% tighter limit. */
-    private static final double STABILITY_PROFILE_FACTOR = 0.9;
+    public static final double STABILITY_PROFILE_FACTOR = 0.9;
 
     private double baseMaxVolatility;
 

@@ -19,7 +19,7 @@ import org.xml.sax.SAXException;
 
 /**
  * Downloads data series from FRED (Federal Reserve Economic Data).
- * Based on Professor Greenwell's request example. FRED answers in XML,
+ * Based on a FRED request example by Sam Greenwell. FRED answers in XML,
  * which Java reads with its built-in parser, so no extra library is needed.
  */
 public class FredClient implements MarketDataSource {
@@ -48,12 +48,18 @@ public class FredClient implements MarketDataSource {
     }
 
     @Override
-    public List<Double> getValues(String seriesId, LocalDate startDate) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder(buildUrl(seriesId, startDate))
+    public List<Double> getValues(String seriesId, LocalDate startDate, String units)
+            throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder(buildUrl(seriesId, startDate, units))
                 .timeout(REQUEST_TIMEOUT)
                 .GET()
                 .build();
-        HttpResponse<byte[]> response = http.send(request, HttpResponse.BodyHandlers.ofByteArray());
+        HttpResponse<byte[]> response;
+        try {
+            response = http.send(request, HttpResponse.BodyHandlers.ofByteArray());
+        } catch (IOException e) { // no connection, DNS failure or timeout
+            throw new IOException("Couldn't reach FRED. Check your internet connection and try again.", e);
+        }
         if (response.statusCode() != HTTP_OK) {
             throw new IOException("FRED request for " + seriesId + " failed with status " + response.statusCode()
                     + " (400 usually means a bad API key)");
@@ -66,13 +72,15 @@ public class FredClient implements MarketDataSource {
      *
      * @param seriesId  the series id
      * @param startDate the first day to include
+     * @param units     FRED's units code, for example "lin"
      * @return the full request URL
      */
-    private URI buildUrl(String seriesId, LocalDate startDate) {
+    private URI buildUrl(String seriesId, LocalDate startDate, String units) {
         StringBuilder url = new StringBuilder(BASE_URL)
                 .append("?series_id=").append(URLEncoder.encode(seriesId, StandardCharsets.UTF_8))
                 .append("&api_key=").append(URLEncoder.encode(apiKey, StandardCharsets.UTF_8))
-                .append("&observation_start=").append(startDate);
+                .append("&observation_start=").append(startDate)
+                .append("&units=").append(URLEncoder.encode(units, StandardCharsets.UTF_8));
         return URI.create(url.toString());
     }
 
@@ -99,7 +107,11 @@ public class FredClient implements MarketDataSource {
         for (int i = 0; i < observations.getLength(); i++) {
             String value = ((Element) observations.item(i)).getAttribute("value");
             if (!value.equals(MISSING_VALUE)) {
-                values.add(Double.parseDouble(value));
+                try {
+                    values.add(Double.parseDouble(value));
+                } catch (NumberFormatException e) {
+                    throw new IOException("FRED sent a value that is not a number", e);
+                }
             }
         }
         return values;

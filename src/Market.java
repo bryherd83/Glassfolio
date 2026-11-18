@@ -9,12 +9,18 @@ import java.util.List;
  * swapped for another API or a test stub without changing this class.
  */
 public class Market {
-    /** Each row is {series id, display name}. */
-    private static final String[][] INDEXES = {
-            {"SP500", "S&P 500"},
-            {"NASDAQCOM", "NASDAQ Composite"},
-            {"DJIA", "Dow Jones Industrial Average"}
-    };
+    /**
+     * One index the app can suggest.
+     *
+     * @param seriesId the data source's id for the index, for example "SP500"
+     * @param name     the name shown to the user, for example "S&P 500"
+     */
+    private record IndexInfo(String seriesId, String name) { }
+
+    private static final List<IndexInfo> INDEXES = List.of(
+            new IndexInfo("SP500", "S&P 500"),
+            new IndexInfo("NASDAQCOM", "NASDAQ Composite"),
+            new IndexInfo("DJIA", "Dow Jones Industrial Average"));
     private static final int YEARS_OF_HISTORY = 1;
 
     private final MarketDataSource source;
@@ -42,9 +48,9 @@ public class Market {
     public List<Stock> loadIndexes() throws IOException, InterruptedException {
         LocalDate start = LocalDate.now().minusYears(YEARS_OF_HISTORY);
         List<Stock> indexes = new ArrayList<>();
-        for (String[] index : INDEXES) {
-            List<Double> prices = source.getValues(index[0], start);
-            indexes.add(Stock.fromPrices(index[0], index[1], prices));
+        for (IndexInfo index : INDEXES) {
+            List<Double> prices = source.getValues(index.seriesId(), start);
+            indexes.add(Stock.fromPrices(index.seriesId(), index.name(), prices));
         }
         return indexes;
     }
