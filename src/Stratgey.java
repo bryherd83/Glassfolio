@@ -1,14 +1,14 @@
 /**
  * Base class for the investing strategies (Strategy pattern).
  * Each child scores an index its own way, and callers only use score()
- * and explain(), so a new strategy plugs in without changing Main.
+ * and explain(), so a new strategy plugs in without changing the screens.
  */
 public abstract class Stratgey {
 
    /** Turns fractions like 0.12 into points like 12 so scores are easy to read. */
    protected static final double SCORE_SCALE = 100;
 
-   protected String name;
+   private final String name;
 
    /**
     * @param name the strategy's display name, for example "Growth"

@@ -51,8 +51,8 @@ public final class FormScreen {
     private static final double GUIDE_MIN_HEIGHT = 820; // below this the guide would crowd the form
     private static final String NO_PASSWORD = ""; // the app has no sign-in yet, so it never asks for one
 
-    private static final String BRAND_STYLE = Styles.DISPLAY_FONT + "-fx-font-size: 20px; -fx-font-style: italic; -fx-text-fill: -text-2;";
-    private static final String HEADLINE_STYLE = Styles.DISPLAY_FONT + "-fx-font-size: 36px; -fx-text-fill: -text;";
+    private static final String BRAND_STYLE = "-fx-font-size: 20px; -fx-font-style: italic; -fx-text-fill: -text-2;";
+    private static final String HEADLINE_STYLE = Styles.HEADING + "-fx-font-size: 36px; -fx-text-fill: -text;";
     private static final String BLURB_STYLE = "-fx-font-size: 13px; -fx-text-fill: -text-3;";
     private static final String FIELD_LABEL_STYLE = "-fx-font-size: 13px; -fx-text-fill: -text-2;";
 

@@ -13,7 +13,7 @@ public final class ProfileGuide {
     private static final Insets PADDING = new Insets(4, 30, 0, 30); // lines the text up with the form's fields
     private static final double PERCENT = 100;
 
-    private static final String TITLE_STYLE = Styles.DISPLAY_FONT + "-fx-font-size: 16px; -fx-text-fill: -text;";
+    private static final String TITLE_STYLE = Styles.HEADING + "-fx-font-size: 16px; -fx-text-fill: -text;";
     private static final String NAME_STYLE = "-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -text;";
     private static final String TEXT_STYLE = "-fx-font-size: 12px; -fx-text-fill: -text-2;";
     private static final String NOTE_STYLE = "-fx-font-size: 11px; -fx-text-fill: -text-3;";

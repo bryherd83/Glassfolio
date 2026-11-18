@@ -53,10 +53,10 @@ public final class ResultsScreen {
     private static final String CAPTION_STYLE = "-fx-font-size: 11px; -fx-text-fill: -text-3;";
     private static final String VALUE_STYLE = "-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: -text;";
     private static final String SCORE_STYLE = "-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: -text;";
-    private static final String SECTION_STYLE = Styles.DISPLAY_FONT + "-fx-font-size: 17px; -fx-text-fill: -text;";
+    private static final String SECTION_STYLE = Styles.HEADING + "-fx-font-size: 17px; -fx-text-fill: -text;";
     private static final String ECONOMY_VALUE_STYLE = "-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: -text-2;";
     // the top pick reads first: bigger serif name and score than the rest
-    private static final String TOP_NAME_STYLE = Styles.DISPLAY_FONT + "-fx-font-size: 21px; -fx-text-fill: -text;";
+    private static final String TOP_NAME_STYLE = Styles.HEADING + "-fx-font-size: 21px; -fx-text-fill: -text;";
     private static final String TOP_SCORE_STYLE = "-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: -text;";
     private static final String EMPTY_STYLE = "-fx-font-size: 14px; -fx-text-fill: -text-2;";
     private static final String RANK_STYLE = """

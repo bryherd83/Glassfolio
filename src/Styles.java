@@ -1,5 +1,8 @@
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import javafx.scene.text.Font;
 
 /**
  * Every shared style in one place. Styles only use the named colors from
@@ -7,12 +10,13 @@ import java.util.Base64;
  */
 public final class Styles {
     /**
-     * The display typeface for headings: a serif, as the financial press uses to signal trust,
-     * while body text stays in the system sans. Falls back to the system font where it isn't installed.
+     * Headings use IBM Plex Sans SemiBold. Plex is the app-wide typeface: a sans made for
+     * business software, with clear figures for financial numbers.
      */
-    public static final String DISPLAY_FONT = "-fx-font-family: 'Georgia';";
+    // the SemiBold file registers as its own family, so headings name it directly
+    public static final String HEADING = "-fx-font-family: 'IBM Plex Sans SmBld';";
     /** Style for screen and card titles. */
-    public static final String TITLE = DISPLAY_FONT + "-fx-font-size: 24px; -fx-text-fill: -text;";
+    public static final String TITLE = HEADING + "-fx-font-size: 24px; -fx-text-fill: -text;";
     /** Style for supporting text. */
     public static final String SUBTITLE = "-fx-font-size: 13px; -fx-text-fill: -text-2;";
     /** Named color for values that went up. */
@@ -51,6 +55,7 @@ public final class Styles {
     public static final String SHEET_URL;
 
     private static final String SHEET = """
+            .root { -fx-font-family: 'IBM Plex Sans'; }
             .text-field, .combo-box {
                 -fx-background-color: -field-bg; -fx-background-radius: 10;
                 -fx-border-color: -field-border; -fx-border-radius: 10;
@@ -90,6 +95,28 @@ public final class Styles {
         SHEET_URL = "data:text/css;base64," + Base64.getEncoder().encodeToString(SHEET.getBytes(StandardCharsets.UTF_8));
     }
 
+    private static final String[] FONT_FILES = {
+        "IBMPlexSans-Regular.ttf", "IBMPlexSans-Italic.ttf", "IBMPlexSans-SemiBold.ttf", "IBMPlexSans-Bold.ttf"
+    };
+    private static final double FONT_LOAD_SIZE = 12; // any size works; JavaFX registers the whole family
+    private static final System.Logger LOG = System.getLogger(Styles.class.getName());
+
     private Styles() {
+    }
+
+    /**
+     * Registers the bundled IBM Plex Sans fonts. Call once before building any screen. If a
+     * file is missing the app still works and falls back to the system font.
+     */
+    public static void loadFonts() {
+        for (String file : FONT_FILES) {
+            try (InputStream in = Styles.class.getResourceAsStream("/fonts/" + file)) {
+                if (in == null || Font.loadFont(in, FONT_LOAD_SIZE) == null) {
+                    LOG.log(System.Logger.Level.WARNING, "Font not loaded: " + file);
+                }
+            } catch (IOException e) {
+                LOG.log(System.Logger.Level.WARNING, "Font not loaded: " + file, e);
+            }
+        }
     }
 }

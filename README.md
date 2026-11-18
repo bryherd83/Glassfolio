@@ -45,7 +45,7 @@ Set your API key as an environment variable. Never put it in the code.
 ```powershell
 $env:FRED_API_KEY = "<your key>"
 javac -d out --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls src\*.java
-java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --enable-native-access=javafx.graphics -cp out Main
+java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --enable-native-access=javafx.graphics -cp "out;src" Main
 ```
 
 ## Tests
@@ -67,4 +67,4 @@ Class diagram, sequence diagram and storyboard: [docs/design.md](docs/design.md)
 
 Blayne Ryherd and Luke Kawa.
 
-Market data from [FRED](https://fred.stlouisfed.org/), Federal Reserve Bank of St. Louis.
+Market data from [FRED](https://fred.stlouisfed.org/), Federal Reserve Bank of St. Louis. Typeface: [IBM Plex Sans](https://github.com/IBM/plex), SIL Open Font License (`src/fonts/OFL-IBM-Plex-Sans.txt`).

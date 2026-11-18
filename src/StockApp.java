@@ -43,6 +43,7 @@ public class StockApp extends Application {
     @Override
     public void start(Stage stage) {
         this.stage = stage;
+        Styles.loadFonts();
         theme.addListener((obs, oldTheme, newTheme) -> preferences.put(THEME_KEY, newTheme.name()));
         form = new FormScreen(this::suggest, theme);
         try {

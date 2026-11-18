@@ -20,6 +20,7 @@ What changed for people using Glassfolio. Developer details are in the commit hi
 
 ### Changed
 - New name: Glassfolio.
+- New typeface, IBM Plex Sans, chosen for clear numbers and a trustworthy look.
 - The form no longer asks for a password. There is no sign-in yet, so it never used one.
 - Data loads in the background, so the window never freezes.
 
