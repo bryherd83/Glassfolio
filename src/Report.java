@@ -7,7 +7,7 @@ public class Report {
     private List<Suggestion> suggestions;
     private String generatedOn;
 
-    public Report(User user, String strategyName, List<Suggestion> suggestions, String generatedOn) {
+    public Report(User user, String strategyName, List<Suggestion> suggestions) {
         this.user = user;
         this.strategyName = strategyName;
         this.suggestions = suggestions;

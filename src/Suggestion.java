@@ -20,4 +20,11 @@ public class Suggestion {
         return reason;
     }
 
+    public String toString(){
+        return "Ticker" + stock.getTicker()
+                + "Company: " + stock.getCompanyName()
+                + "Price: " + stock.getPrice()
+                + "Reason: " + reason;
+    }
+
 }

@@ -24,10 +24,11 @@ public class Main{
 
         if(choice == 1) {
             user.setRiskProfile(1);
-            stratgey = new Stability(1.2, 0.03)
+            stratgey = new Stability(1.2, 0.03);
         } else {
             user.setRiskProfile(2);
             stratgey = new Growth(0.15);
         }
+        Suggestion suggestor = new suggestion
         }
     }
