@@ -1,6 +1,7 @@
 import java.util.List;
 import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -10,6 +11,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Separator;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -51,7 +53,11 @@ public final class ResultsScreen {
     private static final String CAPTION_STYLE = "-fx-font-size: 11px; -fx-text-fill: -text-3;";
     private static final String VALUE_STYLE = "-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: -text;";
     private static final String SCORE_STYLE = "-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: -text;";
-    private static final String SECTION_STYLE = "-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: -text;";
+    private static final String SECTION_STYLE = Styles.DISPLAY_FONT + "-fx-font-size: 17px; -fx-text-fill: -text;";
+    private static final String ECONOMY_VALUE_STYLE = "-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: -text-2;";
+    // the top pick reads first: bigger serif name and score than the rest
+    private static final String TOP_NAME_STYLE = Styles.DISPLAY_FONT + "-fx-font-size: 21px; -fx-text-fill: -text;";
+    private static final String TOP_SCORE_STYLE = "-fx-font-size: 30px; -fx-font-weight: bold; -fx-text-fill: -text;";
     private static final String EMPTY_STYLE = "-fx-font-size: 14px; -fx-text-fill: -text-2;";
     private static final String RANK_STYLE = """
             -fx-background-color: -rank-bg; -fx-background-radius: 17;
@@ -141,37 +147,39 @@ public final class ResultsScreen {
     }
 
     /**
-     * Builds the row of economy tiles: interest rate, inflation and unemployment.
+     * Builds one bar with the interest rate, inflation and unemployment,
+     * separated by dividers. It is context for the picks, so it stays quieter.
      *
      * @param economy the numbers to show
-     * @return the row
+     * @return the bar
      */
     private static HBox buildEconomyStrip(EconomySnapshot economy) {
         HBox strip = new HBox(SECTION_SPACING,
-                economyTile("Fed interest rate", economy.fedFundsRate()),
-                economyTile("Inflation, last 12 months", economy.inflation()),
-                economyTile("Unemployment", economy.unemployment()));
-        strip.getChildren().forEach(tile -> HBox.setHgrow(tile, Priority.ALWAYS));
+                economyItem("Fed interest rate", economy.fedFundsRate()),
+                new Separator(Orientation.VERTICAL),
+                economyItem("Inflation, last 12 months", economy.inflation()),
+                new Separator(Orientation.VERTICAL),
+                economyItem("Unemployment", economy.unemployment()));
+        strip.setPadding(TILE_PADDING);
+        strip.setStyle(Styles.SOLID_CARD);
         return strip;
     }
 
     /**
-     * Builds one economy tile: a caption over a large percent.
+     * Builds one economy number: a caption over the percent.
      *
      * @param caption what the number is
      * @param percent the value, 4.33 means 4.33%
-     * @return the tile
+     * @return the item
      */
-    private static VBox economyTile(String caption, double percent) {
+    private static VBox economyItem(String caption, double percent) {
         Label captionLabel = new Label(caption);
         captionLabel.setStyle(CAPTION_STYLE);
         Label value = new Label(String.format("%.2f%%", percent));
-        value.setStyle(SCORE_STYLE);
-        VBox tile = new VBox(TILE_SPACING, captionLabel, value);
-        tile.setPadding(TILE_PADDING);
-        tile.setMaxWidth(Double.MAX_VALUE);
-        tile.setStyle(Styles.SOLID_CARD);
-        return tile;
+        value.setStyle(ECONOMY_VALUE_STYLE);
+        VBox item = new VBox(TILE_SPACING, captionLabel, value);
+        HBox.setHgrow(item, Priority.ALWAYS);
+        return item;
     }
 
     /**
@@ -222,7 +230,7 @@ public final class ResultsScreen {
         rankLabel.setMaxSize(RANK_SIZE, RANK_SIZE);
 
         Label name = new Label(stock.getName());
-        name.setStyle(NAME_STYLE);
+        name.setStyle(top ? TOP_NAME_STYLE : NAME_STYLE);
 
         Label reason = new Label(suggestion.reason());
         reason.setStyle(REASON_STYLE);
@@ -238,7 +246,7 @@ public final class ResultsScreen {
         HBox.setHgrow(details, Priority.ALWAYS);
 
         Label score = new Label(String.format("%.1f", suggestion.score()));
-        score.setStyle(SCORE_STYLE);
+        score.setStyle(top ? TOP_SCORE_STYLE : SCORE_STYLE);
         Label scoreCaption = new Label("match score");
         scoreCaption.setStyle(CAPTION_STYLE);
         VBox scoreBox = new VBox(score, scoreCaption);
@@ -286,6 +294,7 @@ public final class ResultsScreen {
         chart.setCreateSymbols(false);
         chart.setAnimated(false);
         chart.setMinHeight(CHART_HEIGHT);
+        chart.setPrefHeight(CHART_HEIGHT); // grows into spare room; a large default would force scrolling
         VBox.setVgrow(chart, Priority.ALWAYS);
         for (Stock stock : indexes) {
             XYChart.Series<Number, Number> line = new XYChart.Series<>();

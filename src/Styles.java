@@ -6,8 +6,13 @@ import java.util.Base64;
  * {@link Theme} (like -text or -accent), so they work in both themes.
  */
 public final class Styles {
+    /**
+     * The display typeface for headings: a serif, as the financial press uses to signal trust,
+     * while body text stays in the system sans. Falls back to the system font where it isn't installed.
+     */
+    public static final String DISPLAY_FONT = "-fx-font-family: 'Georgia';";
     /** Style for screen and card titles. */
-    public static final String TITLE = "-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: -text;";
+    public static final String TITLE = DISPLAY_FONT + "-fx-font-size: 24px; -fx-text-fill: -text;";
     /** Style for supporting text. */
     public static final String SUBTITLE = "-fx-font-size: 13px; -fx-text-fill: -text-2;";
     /** Named color for values that went up. */
@@ -78,6 +83,7 @@ public final class Styles {
             .axis { -fx-tick-label-fill: -text-3; }
             .axis-label { -fx-text-fill: -text-3; }
             .scroll-pane, .scroll-pane > .viewport { -fx-background-color: transparent; }
+            .separator .line { -fx-border-color: -surface-border; -fx-border-width: 0 0 0 1; }
             """;
 
     static {

@@ -3,17 +3,17 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 /**
- * A short, plain-language card under the form that explains the two risk
+ * A short, plain-language note under the form that explains the two risk
  * profiles, so the user can pick one without knowing what volatility means.
  * The limits come from the strategy classes, so the text can't drift from the rules.
  */
 public final class ProfileGuide {
     private static final double SPACING = 10;
     private static final double LINE_SPACING = 2;
-    private static final Insets PADDING = new Insets(20, 30, 20, 30);
+    private static final Insets PADDING = new Insets(4, 30, 0, 30); // lines the text up with the form's fields
     private static final double PERCENT = 100;
 
-    private static final String TITLE_STYLE = "-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: -text;";
+    private static final String TITLE_STYLE = Styles.DISPLAY_FONT + "-fx-font-size: 16px; -fx-text-fill: -text;";
     private static final String NAME_STYLE = "-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: -text;";
     private static final String TEXT_STYLE = "-fx-font-size: 12px; -fx-text-fill: -text-2;";
     private static final String NOTE_STYLE = "-fx-font-size: 11px; -fx-text-fill: -text-3;";
@@ -22,9 +22,9 @@ public final class ProfileGuide {
     }
 
     /**
-     * Builds the guide card.
+     * Builds the guide. It is plain text on the background, not another box.
      *
-     * @return the card
+     * @return the guide
      */
     public static VBox build() {
         Label title = new Label("Which profile fits you?");
@@ -43,7 +43,6 @@ public final class ProfileGuide {
 
         VBox card = new VBox(SPACING, title, stability, growth, note);
         card.setPadding(PADDING);
-        card.setStyle(Styles.SOLID_CARD);
         return card;
     }
 
@@ -60,6 +59,7 @@ public final class ProfileGuide {
         return new VBox(LINE_SPACING, nameLabel, wrapped(description, TEXT_STYLE));
     }
 
+    /** @return a label that wraps onto more lines instead of cutting off */
     private static Label wrapped(String text, String style) {
         Label label = new Label(text);
         label.setStyle(style);
