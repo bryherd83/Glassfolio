@@ -6,6 +6,28 @@ import javafx.application.Application;
  */
 public class Main {
 
+        IO.println("What is your Budget?");
+        double budget = Double.parseDouble(IO.readln());
+
+        user.setBudget(budget);
+
+        IO.println("""
+                Select Risk Profile:
+                1. Stability
+                2. Growth
+                """);
+        int choice = Integer.parseInt(IO.readln());
+        Stratgey stratgey;
+
+        if(choice == 1) {
+            user.setRiskProfile(1);
+            stratgey = new Stability(1.2, 0.03);
+        } else {
+            user.setRiskProfile(2);
+            stratgey = new Growth(0.15);
+        }
+        Suggestion suggestor = new suggestion
+        }
     /**
      * Opens the JavaFX window.
      *
