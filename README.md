@@ -10,12 +10,14 @@ A Java desktop app that suggests a U.S. market index (S&P 500, NASDAQ Composite 
 
 - **Stability** profile: picks the index whose price moved the least over the last year (lowest volatility).
 - **Growth** profile: picks the index that rose the most over the last year.
-- Shows each suggestion with its reason, price, 1-year change, volatility and what your budget would be worth if you had invested it a year ago.
+- Shows each suggestion with its reason, price, 1-year change, volatility, biggest drop, year range and what your budget would be worth if you had invested it a year ago.
+- Lists the indexes it left out and why, and switches to the other profile's picks with one click.
 - Charts all three indexes over the past year.
 - Shows the current Fed interest rate, inflation and unemployment.
+- Compares each pick with keeping the same budget in safe savings (the past year's average 3-month Treasury bill rate).
 - The start screen shows a live market overview and explains each risk profile in plain words.
 - Light and dark themes, switchable from either screen.
-- Fills any window size; press F11 for full screen.
+- Opens full screen; press F11 or Esc to switch to a window.
 
 ## Requirements
 
@@ -32,20 +34,34 @@ git clone https://github.com/bryherd83/Glassfolio.git
 cd Glassfolio
 ```
 
-Set your API key as an environment variable. Never put it in the code.
+The first time Glassfolio opens, it asks for your FRED API key. Paste it in and click Connect. The app checks the key with FRED and, if "Remember on this computer" is ticked, saves it for next time. To change it later, click "Change API key" under the form.
+
+Developers can set the `FRED_API_KEY` environment variable instead (a key saved in the app wins). Never put the key in the code.
 
 **IntelliJ**
 1. File → Project Structure → Libraries → + → Java, pick the JavaFX SDK's `lib` folder.
-2. Run → Edit Configurations → `Main`:
+2. Run → Edit Configurations → `glassfolio.Main`:
    - VM options: `--module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --enable-native-access=javafx.graphics`
-   - Environment variables: `FRED_API_KEY=<your key>`
-3. Run `Main`.
+   - Environment variables (optional): `FRED_API_KEY=<your key>`
+3. Run `glassfolio.Main`.
 
 **PowerShell**
 ```powershell
-$env:FRED_API_KEY = "<your key>"
-javac -d out --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls src\*.java
-java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --enable-native-access=javafx.graphics -cp "out;src" Main
+$env:FRED_API_KEY = "<your key>"   # optional; the app can ask for it instead
+javac -d out\classes --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls (Get-ChildItem -Recurse src -Filter *.java).FullName
+java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --enable-native-access=javafx.graphics -cp "out\classes;src" glassfolio.Main
+```
+
+**Runnable JAR**
+
+Build it once (after the `javac` line above):
+```powershell
+Copy-Item -Recurse src\fonts out\classes\fonts -Force
+jar --create --file out\glassfolio.jar --main-class glassfolio.Main -C out\classes .
+```
+Run it (JavaFX isn't inside the JAR, so point to the SDK):
+```powershell
+java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --enable-native-access=javafx.graphics -jar out\glassfolio.jar
 ```
 
 ## Tests
@@ -54,17 +70,19 @@ java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --en
 
 ## Project layout
 
-| Part | Classes |
-|---|---|
-| Screens | `StockApp`, `FormScreen`, `ParticleChart`, `MarketStrip`, `ProfileGuide`, `ResultsScreen` |
-| Look | `GlassTheme`, `Theme`, `Styles`, `Motion`, `Backdrop`, `Sparkline` |
-| Rules | `Stratgey`, `Stability`, `Growth`, `Suggestion`, `User` |
-| Data | `MarketDataSource`, `FredClient`, `HistoryCache`, `Market`, `MarketConditions`, `Stock`, `EconomySnapshot` |
+| Package | What it holds | Classes |
+|---|---|---|
+| `glassfolio` | Starts the app | `Main` |
+| `glassfolio.gui` | Screens, look and sound | `StockApp`, `BootScreen`, `FormScreen`, `AppIcon`, `DotField`, `EconomyPanel`, `RiskQuizPanel`, `StarField`, `KeyScreen`, `ParticleChart`, `MarketStrip`, `ProfileGuide`, `ResultsScreen`, `ResultsData`, `IndexChart`, `ChartReadout`, `GlassTheme`, `Theme`, `Styles`, `Motion`, `Backdrop`, `Sparkline`, `Chime` |
+| `glassfolio.model` | Rules and market objects | `Strategy`, `Stability`, `Growth`, `Suggestion`, `User`, `Market`, `MarketConditions`, `Stock`, `EconomySnapshot`, `Period`, `RiskQuiz` |
+| `glassfolio.data` | Loading data from FRED | `MarketDataSource`, `FredClient`, `HistoryCache`, `ApiKeyStore`, `VisitStore` |
 
-Class diagram, sequence diagram and storyboard: [docs/design.md](docs/design.md). User-facing changes: [docs/CHANGELOG.md](docs/CHANGELOG.md).
+The model never imports the GUI, so the rules can be tested without JavaFX.
+
+Class diagram, sequence diagram, storyboard and [security and QA](docs/design.md#security-and-qa): [docs/design.md](docs/design.md). User-facing changes: [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
 ## Team
 
 Blayne Ryherd and Luke Kawa.
 
-Market data from [FRED](https://fred.stlouisfed.org/), Federal Reserve Bank of St. Louis. Typeface: [IBM Plex Sans](https://github.com/IBM/plex), SIL Open Font License (`src/fonts/OFL-IBM-Plex-Sans.txt`).
+Market data from [FRED](https://fred.stlouisfed.org/), Federal Reserve Bank of St. Louis. Typeface: [Poppins](https://github.com/itfoundry/Poppins), SIL Open Font License (`src/fonts/OFL-Poppins.txt`).
