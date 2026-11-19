@@ -19,12 +19,12 @@ import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
- * Checks the model classes (no JavaFX or internet needed). Uses a fake
+ * Checks the model classes (no internet needed). Uses a fake
  * MarketDataSource instead of FRED, so the results are always the same.
  *
  * Run from the project folder (Java 25):
- *   javac -d out/test -sourcepath src test/ModelTest.java
- *   java -cp out/test ModelTest
+ *   javac -d out/test --module-path <javafx-sdk>/lib --add-modules javafx.controls -sourcepath src test/ModelTest.java
+ *   java --module-path <javafx-sdk>/lib --add-modules javafx.controls -cp out/test ModelTest
  */
 public class ModelTest {
     private static final double TOLERANCE = 1e-9;

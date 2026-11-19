@@ -2,21 +2,24 @@
 
 A Java desktop app that suggests a U.S. market index (S&P 500, NASDAQ Composite or Dow Jones) based on your risk profile, using live data from FRED (Federal Reserve Economic Data).
 
-![Results screen](docs/storyboard/2-results.png)
+![Results screen](docs/storyboard/light-results.png)
 
-*Screenshot with made-up sample data.*
+*Results screen with real FRED data (light theme).*
 
 ## What it does
 
 - **Stability** profile: picks the index whose price moved the least over the last year (lowest volatility).
 - **Growth** profile: picks the index that rose the most over the last year.
-- Shows each suggestion with its reason, price, 1-year change, volatility, biggest drop, year range and what your budget would be worth if you had invested it a year ago.
+- Shows each suggestion with its reason, price, 1-year change, volatility, biggest drop, year range and what your budget would be worth if you had invested it a year ago, plus a worst case and the value after inflation.
+- A "Why this pick?" panel on each result spells out the rule and the numbers behind it.
 - Lists the indexes it left out and why, and switches to the other profile's picks with one click.
-- Charts all three indexes over the past year.
+- Charts all three indexes over 1 week, 1 month, 3 months or 1 year.
 - Shows the current Fed interest rate, inflation and unemployment.
 - Compares each pick with keeping the same budget in safe savings (the past year's average 3-month Treasury bill rate).
 - The start screen shows a live market overview and explains each risk profile in plain words.
-- Light and dark themes, switchable from either screen.
+- Not sure which profile fits? A 3-question risk quiz suggests one.
+- "Remember me" (off by default) welcomes you back with your last name, budget and profile.
+- Light theme (pink-violet glass) at launch and a dark theme (teal and lime), switchable from either screen.
 - Opens full screen; press F11 or Esc to switch to a window.
 
 ## Requirements
@@ -66,7 +69,11 @@ java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --en
 
 ## Tests
 
-`test/ModelTest.java` checks the math, strategies, ranking and input validation with fake data (no internet or JavaFX needed). Run commands are at the top of the file.
+`test/ModelTest.java` checks the math, strategies, ranking and input validation with fake data (no internet needed). It needs the JavaFX SDK on the module path, because a few checks use GUI helpers:
+```powershell
+javac -d out\test --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls -sourcepath src test\ModelTest.java
+java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls -cp out\test ModelTest
+```
 
 ## Project layout
 
@@ -77,7 +84,7 @@ java --module-path "<path to javafx-sdk>\lib" --add-modules javafx.controls --en
 | `glassfolio.model` | Rules and market objects | `Strategy`, `Stability`, `Growth`, `Suggestion`, `User`, `Market`, `MarketConditions`, `Stock`, `EconomySnapshot`, `Period`, `RiskQuiz` |
 | `glassfolio.data` | Loading data from FRED | `MarketDataSource`, `FredClient`, `HistoryCache`, `ApiKeyStore`, `VisitStore` |
 
-The model never imports the GUI, so the rules can be tested without JavaFX.
+The model never imports the GUI, so the rules don't depend on the screens.
 
 Class diagram, sequence diagram, storyboard and [security and QA](docs/design.md#security-and-qa): [docs/design.md](docs/design.md). User-facing changes: [docs/CHANGELOG.md](docs/CHANGELOG.md).
 
